@@ -19,21 +19,25 @@ vector<string> findLeftEnd(string str, int k, int l){
     return leftEnd;
 }
 
-string findRightEnd(string str, int k, int l){
-    string rightEnd = "";
-    for(int i = l; i < k; i++) rightEnd += findMinimizer(str.substr(i, l - i), k);
-    return rightEnd;
-}
 
-vector<string> removeDups(vector<string> minimizers){
-    vector<string> uniqueMinimizers;
-    for(string minimizer: minimizers){
-        size_t size = uniqueMinimizers.size();
-        if(size == 0 || uniqueMinimizers[size - 1] != minimizer)
-            uniqueMinimizers.push_back(minimizer);
-    }
-    return uniqueMinimizers;
-}
+
+
+
+// vector<string> findRightEnd(string str, int k, int l){
+//     string rightEnd = "";
+//     for(int i = l; i < k; i++) rightEnd += findMinimizer(str.substr(i, l - i), k);
+//     return rightEnd;
+// }
+
+// vector<string> removeDups(vector<string> minimizers){
+//     vector<string> uniqueMinimizers;
+//     for(string minimizer: minimizers){
+//         size_t size = uniqueMinimizers.size();
+//         if(size == 0 || uniqueMinimizers[size - 1] != minimizer)
+//             uniqueMinimizers.push_back(minimizer);
+//     }
+//     return uniqueMinimizers;
+// }
 
 int main(int argc, char** argv){
     string inputFileName = argv[1];
@@ -54,6 +58,7 @@ int main(int argc, char** argv){
 
     // for(int i = 0; i < genome.size() - l + 1; i++)
     //     minimizers.push_back(findMinimizer(genome.substr(i, 1), k));
+
 
 
 }
