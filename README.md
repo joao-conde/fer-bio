@@ -34,3 +34,5 @@ As mentioned, *w ≤ k* guarantees that no gaps appear between adjacent minimize
 
 ### **A mixed strategy**
 Finally, **combining both *(w, k)*-minimizers of a string with *(u, k)*-end-minimizers** for *u = 1, . . . , w−1* at both ends of the string, if *w ≤ k*, **every base in a string will be covered with some minimizer.**
+
+After finding the minimizers for the given genome, it is a good practice to remove the most frequent ones, since these are not good for sequence matching (because their repitition across the genome means it is harder to conclude where that substring came from when aligning two strings).

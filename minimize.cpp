@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <cmath>
 #include <fstream>
-#include <functional>
 #include <iostream>
 #include <map>
 #include <set>
@@ -36,14 +35,9 @@ vector<pair<string,int>> findRightEnd(string str, int k, int l){
     return rightEnd;
 }
 
-int countUniquePositions(pair<string, vector<int>> &minimizer){
-    auto endIt = unique(minimizer.second.begin(), minimizer.second.end());
-    return distance(minimizer.second.begin(), endIt);
-}
-
 struct SortByFrequency {
-    inline bool operator() (pair<string, vector<int>> &minimizer1, pair<string, vector<int>> &minimizer2){
-        return countUniquePositions(minimizer1) > countUniquePositions(minimizer2);
+    inline bool operator() (pair<string, set<int>> &minimizer1, pair<string, set<int>> &minimizer2){
+        return minimizer1.second.size() > minimizer2.second.size();
     }
 };
 
@@ -54,7 +48,7 @@ int main(int argc, char** argv){
     int l = w + k - 1;
     float f = stof(argv[5]);
 
-    //read genome file into single string
+    // read genome file into single string
     ifstream input(inputFileName);
     string genome = "", line;
     while (getline(input, line)) genome += line;
@@ -63,56 +57,59 @@ int main(int argc, char** argv){
     cout << "Extracting minimizers from '" << inputFileName << "' for k=" << k << " and w=" << w << endl;
     cout << "Excluding top " << f << " frequent minimizers" << endl;
 
-    map<string, vector<int>> minimizerPositions;
+    map<string, set<int>> minimizerPositions;
 
-    //left minimizers
+    // left minimizers
     for(pair<string, int> minimizerPos: findLeftEnd(genome.substr(0, l), k, l)){
         if(minimizerPositions.find(minimizerPos.first) != minimizerPositions.end())
-            minimizerPositions[minimizerPos.first].push_back(minimizerPos.second);
+            minimizerPositions[minimizerPos.first].insert(minimizerPos.second);
         else
             minimizerPositions[minimizerPos.first] = {minimizerPos.second};
     }
 
-    //interior minimizers
+    // interior minimizers
     for(int i = 0; i < genome.size() - l + 1; i++){
         pair<string, int> minimizerPos = findMinimizer(genome.substr(i, l), k);
-        minimizerPos.second += i; //adjust considering substring starts i positions after
+        minimizerPos.second += i; // adjust considering substring starts i positions after
         if(minimizerPositions.find(minimizerPos.first) != minimizerPositions.end())
-            minimizerPositions[minimizerPos.first].push_back(minimizerPos.second);
+            minimizerPositions[minimizerPos.first].insert(minimizerPos.second);
         else
             minimizerPositions[minimizerPos.first] = {minimizerPos.second};
     }
 
-    //right minimizers
+    // right minimizers
     for(pair<string, int> minimizerPos: findRightEnd(genome.substr(genome.size() - l + 1, l + 1), k, l)) {
-        minimizerPos.second += genome.size() - l + 1; //adjust considering substring starts genome.size() - l + 1 positions after
+        minimizerPos.second += genome.size() - l + 1; // adjust considering substring starts genome.size() - l + 1 positions after
         if(minimizerPositions.find(minimizerPos.first) != minimizerPositions.end())
-            minimizerPositions[minimizerPos.first].push_back(minimizerPos.second);
+            minimizerPositions[minimizerPos.first].insert(minimizerPos.second);
         else
             minimizerPositions[minimizerPos.first] = {minimizerPos.second};
     }
     
+    // number of minimizers to discard (top f)
     int discard = ceil(minimizerPositions.size() * f);
-    cout << "A total of " << minimizerPositions.size() << " minimizers was found." << endl;
+    cout << "A total of " << minimizerPositions.size() << " minimizers were found." << endl;
     cout << "Discarding top " << f << " minimizers (roughly " << discard << " minimizers)" << endl;
 
-    vector<pair<string, vector<int>>> minimizerPosSortedByFreq;
-    transform(minimizerPositions.begin(), minimizerPositions.end(), back_inserter(minimizerPosSortedByFreq), [](const pair<string, vector<int>> &entry){return entry;});
+    // order minimizers by frequency (descending)
+    vector<pair<string, set<int>>> minimizerPosSortedByFreq;
+    transform(minimizerPositions.begin(), minimizerPositions.end(), back_inserter(minimizerPosSortedByFreq), [](const pair<string, set<int>> &entry){return entry;});
     sort(minimizerPosSortedByFreq.begin(), minimizerPosSortedByFreq.end(), SortByFrequency());
 
+    // discard first minimizers, write others to file
     ofstream output(outputFileName);
     for(int i = 0; i < minimizerPosSortedByFreq.size(); i++){
-        pair<string, vector<int>> minimizerPos = minimizerPosSortedByFreq[i];
+        pair<string, set<int>> minimizerPos = minimizerPosSortedByFreq[i];
         if(i < discard){
             cout << "Discarding frequent minimizer '" << minimizerPos.first << "'" << endl;
             continue;
         }
+        // write minimizer' positions
         output << "Minimizer '" << minimizerPos.first << "' positions in genome: ";
-        sort(minimizerPos.second.begin(), minimizerPos.second.end());
-        auto endIt = unique(minimizerPos.second.begin(), minimizerPos.second.end());
-        for(auto it = minimizerPos.second.begin(); it != endIt; it++) output << *it << " ";
+        for(int pos: minimizerPos.second) output << pos << " ";
         output << endl;
     }
+
     output.close();
-    cout << "Done!" << endl;
+    cout << "Done! Generated " << minimizerPositions.size() - discard << " minimizers" << endl;
 }
