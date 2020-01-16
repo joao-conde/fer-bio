@@ -7,6 +7,23 @@ The code was developed accordingly to the paper:
 
 Many bioinformatics algorithms use **short substrings of a longer sequence**, commonly known as ***k*-mers**, for indexing, search or assembly. **Minimizers** allow **efficient binning of those *k*-mers** so that some information about the sequence contiguity is preserved.
 
+## How to compile and run
+
+Compiled with g++ version 9.2.0:
+```
+g++ minimizer.cpp -o minimize
+```
+
+Run with:
+```
+./minimize INPUT_FILE OUTPUT_FILE W K F
+```
+
+with **W, K and F** being:
+- **W**: window size in k-mers (how many k-mers per window)
+- **K**: k-mer size
+- **F**: percentage of top most frequent minimizers to remove (0 to 1).
+
 ## **Review of *"Reducing storage requirements for biological sequence comparison"***
 
 Sequence comparison is common in bioinformatics, used for example in applications such as overlap determination in genome sequences and genome assembly algorithms.
@@ -35,4 +52,4 @@ As mentioned, *w ≤ k* guarantees that no gaps appear between adjacent minimize
 ### **A mixed strategy**
 Finally, **combining both *(w, k)*-minimizers of a string with *(u, k)*-end-minimizers** for *u = 1, . . . , w−1* at both ends of the string, if *w ≤ k*, **every base in a string will be covered with some minimizer.**
 
-After finding the minimizers for the given genome, it is a good practice to remove the most frequent ones, since these are not good for sequence matching (because their repitition across the genome means it is harder to conclude where that substring came from when aligning two strings).
+After finding the minimizers for the given genome, it is a good practice to **remove the most frequent ones**, since these are not good for sequence matching (because **their repitition across the genome means it is harder to conclude where that substring came from when aligning two strings**).
