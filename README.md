@@ -28,7 +28,7 @@ with **W, K and F** being:
 
 Sequence comparison is common in bioinformatics, used for example in applications such as overlap determination in genome sequences and genome assembly algorithms.
 
-One commonly used method is the **seed and extend** approach. The first step is **choosing the set of *seeds*** that represent each string. ***Seeds* are contiguous *k*-letter substrings called *k*-mers. **
+One commonly used method is the **seed and extend** approach. The first step is **choosing the set of *seeds*** that represent each string. ***Seeds* are contiguous *k*-letter substrings called *k*-mers.**
 
 The number of *k*-mer entries and the space required to store the entire list of *k*-mers can be too large. Hence, to **reduce the storage space** required we must **store less *k*-mers**. But **which ones** to choose?
 
