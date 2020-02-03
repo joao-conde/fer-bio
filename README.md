@@ -32,7 +32,7 @@ One commonly used method is the **seed and extend** approach. The first step is 
 
 The number of *k*-mer entries and the space required to store the entire list of *k*-mers can be too large. Hence, to **reduce the storage space** required we must **store less *k*-mers**. But **which ones** to choose?
 
-Thus, the authors propose a method that allows us to select from each string a **set of special *k*-mers (to be used as seeds) called minimizers.**
+The authors propose a method that allows us to select from each string a **set of special *k*-mers (to be used as seeds) called minimizers.**
 
 ### **Interior minimizers**
 
